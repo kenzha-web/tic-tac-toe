@@ -8,6 +8,18 @@ const boxes = document.querySelectorAll('.box');
 const restart = document.getElementById('btn-restart');
 const difficultySelect = document.getElementById('difficulty');
 
+const rows = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8]
+];
+
+const cols = [
+    [0, 3, 6], [1, 4, 7], [2, 5, 8]
+];
+
+const diags = [
+    [0, 4, 8], [2, 4, 6]
+];
+
 boxes.forEach(box => {
     box.addEventListener('click',  (event) => {
         if (!canMove || event.target.classList.contains('x') || event.target.classList.contains('o')) return;
@@ -24,7 +36,7 @@ boxes.forEach(box => {
             }, 0)
         }
         
-        if (checkWinO()) {
+        else if (checkWinO()) {
             setTimeout(() => {
                 alert('Победил O!');
                 restartGame();
@@ -33,7 +45,7 @@ boxes.forEach(box => {
             }, 0)
         }
         
-        if(checkAllFields() && !checkWinX() && !checkWinO()) {
+        else if(checkAllFields()) {
             setTimeout(() => {
                 alert('Ничья!');
                 restartGame();
@@ -48,78 +60,24 @@ boxes.forEach(box => {
     });
 });
 
+function checkLine(line, player) {
+    return line.every(index => document.getElementById(index).classList.contains(player));
+}
+
 function checkWinX() {
-    const horizontalFillingX = (
-      (document.getElementById('0').classList.contains('x') &&
-        document.getElementById('1').classList.contains('x') &&
-        document.getElementById('2').classList.contains('x')) ||
-      (document.getElementById('3').classList.contains('x') &&
-        document.getElementById('4').classList.contains('x') &&
-        document.getElementById('5').classList.contains('x')) ||
-      (document.getElementById('6').classList.contains('x') &&
-        document.getElementById('7').classList.contains('x') &&
-        document.getElementById('8').classList.contains('x'))
-    );
-    
-    const verticalFillingX = (
-      (document.getElementById('0').classList.contains('x') &&
-        document.getElementById('3').classList.contains('x') &&
-        document.getElementById('6').classList.contains('x')) ||
-      (document.getElementById('1').classList.contains('x') &&
-        document.getElementById('4').classList.contains('x') &&
-        document.getElementById('7').classList.contains('x')) ||
-      (document.getElementById('2').classList.contains('x') &&
-        document.getElementById('5').classList.contains('x') &&
-        document.getElementById('8').classList.contains('x'))
-    );
-    
-    const acuteAngleFillingX = (
-      (document.getElementById('0').classList.contains('x') &&
-        document.getElementById('4').classList.contains('x') &&
-        document.getElementById('8').classList.contains('x')) ||
-      (document.getElementById('2').classList.contains('x') &&
-        document.getElementById('4').classList.contains('x') &&
-        document.getElementById('6').classList.contains('x'))
-    );
-    
-    return horizontalFillingX || verticalFillingX || acuteAngleFillingX;
+    return [
+        rows.some(line => checkLine(line, 'x')),
+        cols.some(line => checkLine(line, 'x')),
+        diags.some(line => checkLine(line, 'x'))
+    ].some(Boolean);
 }
 
 function checkWinO() {
-    const horizontalFillingO = (
-      (document.getElementById('0').classList.contains('o') &&
-        document.getElementById('1').classList.contains('o') &&
-        document.getElementById('2').classList.contains('o')) ||
-      (document.getElementById('3').classList.contains('o') &&
-        document.getElementById('4').classList.contains('o') &&
-        document.getElementById('5').classList.contains('o')) ||
-      (document.getElementById('6').classList.contains('o') &&
-        document.getElementById('7').classList.contains('o') &&
-        document.getElementById('8').classList.contains('o'))
-    );
-    
-    const verticalFillingO = (
-      (document.getElementById('0').classList.contains('o') &&
-        document.getElementById('3').classList.contains('o') &&
-        document.getElementById('6').classList.contains('o')) ||
-      (document.getElementById('1').classList.contains('o') &&
-        document.getElementById('4').classList.contains('o') &&
-        document.getElementById('7').classList.contains('o')) ||
-      (document.getElementById('2').classList.contains('o') &&
-        document.getElementById('5').classList.contains('o') &&
-        document.getElementById('8').classList.contains('o'))
-    );
-    
-    const acuteAngleFillingO = (
-      (document.getElementById('0').classList.contains('o') &&
-        document.getElementById('4').classList.contains('o') &&
-        document.getElementById('8').classList.contains('o')) ||
-      (document.getElementById('2').classList.contains('o') &&
-        document.getElementById('4').classList.contains('o') &&
-        document.getElementById('6').classList.contains('o'))
-    );
-    
-    return horizontalFillingO || verticalFillingO || acuteAngleFillingO;
+    return [
+        rows.some(line => checkLine(line, 'o')),
+        cols.some(line => checkLine(line, 'o')),
+        diags.some(line => checkLine(line, 'o'))
+    ].some(Boolean);
 }
 
 function checkAllFields() {
@@ -155,7 +113,7 @@ function botMove() {
             }, 0)
         }
 
-        if (checkWinO()) {
+        else if (checkWinO()) {
             setTimeout(() => {
                 alert('Победил O!');
                 restartGame();
@@ -164,7 +122,7 @@ function botMove() {
             }, 0);
         }
 
-        if (checkAllFields()) {
+        else if (checkAllFields()) {
             setTimeout(() => {
                 alert('Ничья!');
                 restartGame();
